@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.x3rmination.skillrequirementgenerator.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "skillrequirementgenerator.refmap.json",
+  "mixins": [
+    "ReSkillableConfigMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
