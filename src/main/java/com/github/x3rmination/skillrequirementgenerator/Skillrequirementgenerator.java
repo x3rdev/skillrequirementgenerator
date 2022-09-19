@@ -1,25 +1,14 @@
 package com.github.x3rmination.skillrequirementgenerator;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import floris0106.rereskillablerereforked.common.Config;
+import floris0106.rereskillablerereforked.common.skills.Requirement;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.stream.Collectors;
+import java.lang.reflect.Field;
+import java.util.Map;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod("skillrequirementgenerator")
 public class Skillrequirementgenerator {
 
@@ -27,4 +16,17 @@ public class Skillrequirementgenerator {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    public static void setRequirement(Config config, ResourceLocation resourceLocation, Requirement[] requirements) {
+        try {
+            Field field = config.getClass().getDeclaredField("skillLocks");
+            field.setAccessible(true);
+            Map<ResourceLocation, Requirement[]> map = (Map<ResourceLocation, Requirement[]>) field.get(config);
+            if(map.isEmpty()) {
+                map.put(resourceLocation, requirements);
+            }
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 }

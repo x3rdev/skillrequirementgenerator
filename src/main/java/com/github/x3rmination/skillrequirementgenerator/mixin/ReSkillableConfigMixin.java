@@ -1,55 +1,55 @@
 package com.github.x3rmination.skillrequirementgenerator.mixin;
 
-import majik.rereskillable.Configuration;
-import majik.rereskillable.common.skills.Requirement;
-import majik.rereskillable.common.skills.Skill;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.inventory.EquipmentSlotType;
+import com.github.x3rmination.skillrequirementgenerator.Skillrequirementgenerator;
+import floris0106.rereskillablerereforked.common.Config;
+import floris0106.rereskillablerereforked.common.skills.Requirement;
+import floris0106.rereskillablerereforked.common.skills.Skill;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
-import java.util.Objects;
+@Mixin(Config.class)
+public abstract class ReSkillableConfigMixin {
 
-@Mixin(Configuration.class)
-public class ReSkillableConfigMixin {
 
-    @Shadow(remap = false) @Final private static Map<String, Requirement[]> skillLocks;
+    @Shadow(remap = false) private static Config config;
 
-//    @Inject(method = "getRequirements", at = @At("TAIL"), remap = false)
-//    private static void getRequirementsMixin(ResourceLocation key, CallbackInfoReturnable<Requirement[]> cir) {
-//        System.out.println("REQUIREMENTS ______________________________");
-//        ForgeRegistries.ITEMS.getEntries().stream().forEach(entry -> {
-//            String registryName = entry.getValue().getRegistryName().toString();
-//            if(registryName.equals("minecraft:golden_apple")) {
-//                Requirement[] requirements = skillLocks.get(registryName);
-//                Requirement requirement = new Requirement(Skill.ATTACK, 1);
-//                if(!Arrays.stream(requirements).collect(Collectors.toList()).contains(requirement)) {
-//                    Requirement[] modReqs = new Requirement[1];
-//                    modReqs[0] = requirement;
-//                    Requirement[] finalReqsStream = Stream.concat(Arrays.stream(modReqs), Arrays.stream(requirements)).toArray(Requirement[]::new);
-//                    skillLocks.remove(registryName);
-//                    skillLocks.put(registryName, finalReqsStream);
-//                }
-//            }
-//        });
-//    }
-    @Inject(method = "load", at = @At("HEAD"), remap = false)
+    @Inject(method = "load", at = @At("TAIL"), remap = false)
     private static void loadMixin(CallbackInfo ci) {
         ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
-            String registryName = Objects.requireNonNull(entry.getValue().getRegistryName()).toString();
-            long damage = Math.round(entry.getValue().getDefaultAttributeModifiers(EquipmentSlotType.MAINHAND).get(Attributes.ATTACK_DAMAGE).stream().mapToDouble(AttributeModifier::getAmount).sum());
+            ItemStack stack = entry.getValue().getDefaultInstance();
+            long damage = Math.round(entry.getValue().getAttributeModifiers(EquipmentSlot.MAINHAND, stack).get(Attributes.ATTACK_DAMAGE).stream().mapToDouble(AttributeModifier::getAmount).sum());
             if(damage > 0) {
-                int level = (int) Math.min((damage - 5) * 5, 32);
-                Requirement[] requirements = new Requirement[1];
-                requirements[0] = new Requirement(Skill.ATTACK, level);
-                skillLocks.put(registryName, requirements);
+                int level = (int) Math.min((damage - 5) * 3, 32);
+                if(level > 0) {
+                    Requirement[] requirements = new Requirement[1];
+                    requirements[0] = new Requirement(Skill.ATTACK, level);
+                    Skillrequirementgenerator.setRequirement(config, entry.getValue().getRegistryName(), requirements);
+                }
+            }
+            int armor = 0;
+            for(EquipmentSlot type : EquipmentSlot.values()) {
+                if (type.getType().equals(EquipmentSlot.Type.ARMOR)) {
+                    armor = (int) Math.round(stack.getAttributeModifiers(type).get(Attributes.ARMOR).stream().mapToDouble(AttributeModifier::getAmount).sum());
+                    if (armor > 0) {
+                        break;
+                    }
+                }
+            }
+            if(armor > 0) {
+                int level = Math.min((armor - 5) * 3, 32);
+                if(level > 0) {
+                    Requirement[] requirements = new Requirement[1];
+                    requirements[0] = new Requirement(Skill.DEFENCE, level);
+                    Skillrequirementgenerator.setRequirement(config, entry.getValue().getRegistryName(), requirements);
+                }
             }
         });
     }
