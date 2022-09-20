@@ -31,7 +31,7 @@ public class ReSkillableConfigMixin {
             ItemStack stack = entry.getValue().getDefaultInstance();
             long damage = Math.round(stack.getAttributeModifiers(EquipmentSlotType.MAINHAND).get(Attributes.ATTACK_DAMAGE).stream().mapToDouble(AttributeModifier::getAmount).sum());
             if(damage > 0) {
-                int level = (int) Math.min((damage - 5) * 5, 32);
+                int level = (int) Math.min((Math.pow(damage, 1.5))/2F, 32);
                 if(level > 0) {
                     Requirement[] requirements = new Requirement[1];
                     requirements[0] = new Requirement(Skill.ATTACK, level);
@@ -48,7 +48,7 @@ public class ReSkillableConfigMixin {
                 }
             }
             if(armor > 0) {
-                int level = Math.min((armor - 5) * 3, 32);
+                int level = (int) Math.min((Math.pow(armor, 1.5))/2F, 32);
                 if(level > 0) {
                     Requirement[] requirements = new Requirement[1];
                     requirements[0] = new Requirement(Skill.DEFENCE, level);
