@@ -16,17 +16,4 @@ public class Skillrequirementgenerator {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static void setRequirement(Config config, ResourceLocation resourceLocation, Requirement[] requirements) {
-        try {
-            Field field = config.getClass().getDeclaredField("skillLocks");
-            field.setAccessible(true);
-            Map<ResourceLocation, Requirement[]> map = (Map<ResourceLocation, Requirement[]>) field.get(config);
-            if(map.isEmpty()) {
-                map.put(resourceLocation, requirements);
-            }
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
 }
