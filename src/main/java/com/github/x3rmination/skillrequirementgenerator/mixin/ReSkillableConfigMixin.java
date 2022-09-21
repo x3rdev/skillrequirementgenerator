@@ -1,5 +1,6 @@
 package com.github.x3rmination.skillrequirementgenerator.mixin;
 
+import com.github.x3rmination.skillrequirementgenerator.SkillReqConfig;
 import com.github.x3rmination.skillrequirementgenerator.Skillrequirementgenerator;
 import floris0106.rereskillablerereforked.common.Config;
 import floris0106.rereskillablerereforked.common.skills.Requirement;
@@ -31,7 +32,7 @@ public abstract class ReSkillableConfigMixin {
             ItemStack stack = entry.getValue().getDefaultInstance();
             long damage = Math.round(entry.getValue().getAttributeModifiers(EquipmentSlot.MAINHAND, stack).get(Attributes.ATTACK_DAMAGE).stream().mapToDouble(AttributeModifier::getAmount).sum());
             if(damage > 0) {
-                int level = (int) Math.min(Math.round((Math.pow(damage, 1.5) / 2F)), 32);
+                int level = (int) Math.min(Math.round((Math.pow(damage, SkillReqConfig.damage_power.get()) / SkillReqConfig.damage_divisor.get())), SkillReqConfig.max_level.get());
                 if(level > 0) {
                     Requirement[] requirements = new Requirement[1];
                     requirements[0] = new Requirement(Skill.ATTACK, level);
@@ -52,7 +53,7 @@ public abstract class ReSkillableConfigMixin {
                 }
             }
             if(armor > 0) {
-                int level = (int) Math.min(Math.round((Math.pow(armor, 1.5) / 2F)), 32);
+                int level = (int) Math.min(Math.round((Math.pow(armor, SkillReqConfig.armor_power.get()) / SkillReqConfig.armor_divisor.get())), SkillReqConfig.max_level.get());
                 Requirement[] requirements = new Requirement[1];
                 requirements[0] = new Requirement(Skill.DEFENCE, level);
                 try {
