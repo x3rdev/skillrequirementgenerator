@@ -25,7 +25,7 @@ public abstract class ReSkillableConfigMixin {
 
     @Inject(method = "load", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.AFTER), remap = false)
     private static void loadMixin(CallbackInfo ci) {
-        ForgeRegistries.ITEMS.getEntries().stream().parallel().forEach(entry -> {
+        ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
             if(entry.getValue().getRegistryName() != null) {
                 String registryName = String.valueOf(entry.getValue().getRegistryName());
                 ItemStack stack = entry.getValue().getDefaultInstance();
