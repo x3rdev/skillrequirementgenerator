@@ -18,7 +18,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 group = 'com.github.x3rmination'
-version = '1.4'
+version = '1.5'
 
 java {
     archivesBaseName = 'skillrequirementgenerator'

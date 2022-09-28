@@ -1,7 +1,6 @@
 package com.github.x3rmination.skillrequirementgenerator.mixin;
 
 import com.github.x3rmination.skillrequirementgenerator.SkillReqConfig;
-import com.github.x3rmination.skillrequirementgenerator.Skillrequirementgenerator;
 import majik.rereskillable.Configuration;
 import majik.rereskillable.common.skills.Requirement;
 import majik.rereskillable.common.skills.Skill;
@@ -18,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Mixin(Configuration.class)
 public abstract class ReSkillableConfigMixin {
@@ -27,8 +25,7 @@ public abstract class ReSkillableConfigMixin {
 
     @Inject(method = "load", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.AFTER), remap = false)
     private static void loadMixin(CallbackInfo ci) {
-        ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
-            Skillrequirementgenerator.LOGGER.info(entry.getValue());
+        ForgeRegistries.ITEMS.getEntries().stream().parallel().forEach(entry -> {
             if(entry.getValue().getRegistryName() != null) {
                 String registryName = String.valueOf(entry.getValue().getRegistryName());
                 ItemStack stack = entry.getValue().getDefaultInstance();
