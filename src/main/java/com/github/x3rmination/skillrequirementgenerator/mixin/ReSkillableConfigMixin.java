@@ -54,12 +54,14 @@ public abstract class ReSkillableConfigMixin {
             }
             if(armor > 0) {
                 int level = (int) Math.min(Math.round((Math.pow(armor, SkillReqConfig.armor_power.get()) / SkillReqConfig.armor_divisor.get())), SkillReqConfig.max_level.get());
-                Requirement[] requirements = new Requirement[1];
-                requirements[0] = new Requirement(Skill.DEFENCE, level);
-                try {
-                    ((Map<ResourceLocation, Requirement[]>) config.getClass().getDeclaredField("skillLocks").get(config)).put(entry.getValue().getRegistryName(), requirements);
-                } catch (IllegalAccessException | NoSuchFieldException e) {
-                    e.printStackTrace();
+                if(level > 0) {
+                    Requirement[] requirements = new Requirement[1];
+                    requirements[0] = new Requirement(Skill.DEFENCE, level);
+                    try {
+                        ((Map<ResourceLocation, Requirement[]>) config.getClass().getDeclaredField("skillLocks").get(config)).put(entry.getValue().getRegistryName(), requirements);
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
