@@ -56,8 +56,8 @@ side = "BOTH"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.skillrequirementgenerator]]
-    modId = "rereskillable"
+    modId = "rereskillablerereforked"
     mandatory = true
-    versionRange = "[1.3.6,)"
+    versionRange = "[1.2.1,)"
     ordering = "NONE"
     side = "BOTH"
