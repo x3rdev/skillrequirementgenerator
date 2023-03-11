@@ -27,8 +27,9 @@ public abstract class ReSkillableConfigMixin {
             if(!inConfig(entry.getValue().getRegistryName())) {
                 ItemStack stack = entry.getValue().getDefaultInstance();
                 int damage = (int) Math.round(entry.getValue().getAttributeModifiers(EquipmentSlotType.MAINHAND, stack).get(Attributes.ATTACK_DAMAGE).stream().mapToDouble(AttributeModifier::getAmount).sum());
+                float speed = 4 + (float) entry.getValue().getAttributeModifiers(EquipmentSlotType.MAINHAND, stack).get(Attributes.ATTACK_SPEED).stream().mapToDouble(AttributeModifier::getAmount).sum();
                 if (damage > 0) {
-                    int level = getAttackLevel(damage);
+                    int level = getAttackLevel(damage, speed);
                     if (level > 0) {
                         Requirement[] requirements = new Requirement[1];
                         requirements[0] = new Requirement(Skill.ATTACK, level);
@@ -73,8 +74,8 @@ public abstract class ReSkillableConfigMixin {
         return false;
     }
 
-    private static int getAttackLevel(int damage) {
-        int level = (int) Math.round(SkillReqConfig.damage_multiplier.get() * Math.log(Math.max(0, damage + SkillReqConfig.damage_addend.get())) + SkillReqConfig.damage_shift.get());
+    private static int getAttackLevel(int damage, float attackSpeed) {
+        int level = (int) Math.round(SkillReqConfig.damage_multiplier.get() * Math.log(Math.max(0, damage * (attackSpeed - 0.6) + SkillReqConfig.damage_addend.get())) + SkillReqConfig.damage_shift.get());
         return Math.min(Config.getMaxLevel(), level);
     }
 

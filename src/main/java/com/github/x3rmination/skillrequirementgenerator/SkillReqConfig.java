@@ -16,7 +16,7 @@ public class SkillReqConfig {
 
 
     static {
-        BUILDER.comment("Formula for skill level: a * ln(x + b) + c", "s: Stat (ex. attack dmg, armor) ", "a: constant ", "b: constant ", "c: constant", "these constants can be defined here:", "Note: negative values inside the natural log will be set to 0").push("Skill Requirement Generator Config");
+        BUILDER.comment("Formula for skill level: a * ln(x * (s-0.6) + b) + c", "x: Stat (ex. attack dmg, armor) ", "s: Attack Speed (when relevant)", "a: constant ", "b: constant ", "c: constant", "these constants can be defined here:", "Note: negative values inside the natural log will be set to 0").push("Skill Requirement Generator Config");
         damage_multiplier = BUILDER.comment("Damage multiplier").defineInRange("damage_multiplier", 14F, 0, Float.MAX_VALUE);
         damage_addend = BUILDER.comment("Damage addend").defineInRange("damage_addend", -3F, -Float.MAX_VALUE, Float.MAX_VALUE);
         damage_shift = BUILDER.comment("Damage shift").defineInRange("damage_shift", -5F, -Float.MAX_VALUE, Float.MAX_VALUE);
